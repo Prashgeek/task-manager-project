@@ -1,0 +1,14 @@
+# Backend (Django)
+task_manager_backend/__pycache__/
+task_manager_backend/env/
+task_manager_backend/venv/
+task_manager_backend/*.sqlite3
+
+# Frontend (Node)
+task_manager_frontend/node_modules/
+task_manager_frontend/.next/
+task_manager_frontend/out/
+
+# System files
+.DS_Store
+.vscode/
