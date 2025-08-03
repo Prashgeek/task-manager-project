@@ -24,8 +24,14 @@ export default function LoginPage() {
       localStorage.setItem('refresh_token', response.data.refresh);
 
       router.push('/');
-    } catch (err: any) {
-      if (err.response && err.response.status === 401) {
+    } catch (err: unknown) {
+      // Type guard to check if err is AxiosError like
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'response' in err &&
+        (err as any).response?.status === 401
+      ) {
         setError('Invalid username or password.');
       } else {
         setError('An error occurred. Please try again.');
@@ -184,4 +190,3 @@ export default function LoginPage() {
     </div>
   );
 }
- 
