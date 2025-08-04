@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
@@ -25,16 +25,15 @@ export default function LoginPage() {
 
       router.push('/');
     } catch (err: unknown) {
-      // Type guard to check if err is AxiosError like
-      if (
-        typeof err === 'object' &&
-        err !== null &&
-        'response' in err &&
-        (err as any).response?.status === 401
-      ) {
-        setError('Invalid username or password.');
+      // This is the cleanest type guard for AxiosError
+      if (axios.isAxiosError(err)) {
+        if (err.response && err.response.status === 401) {
+          setError('Invalid username or password.');
+        } else {
+          setError('An error occurred. Please try again.');
+        }
       } else {
-        setError('An error occurred. Please try again.');
+        setError('An unexpected error occurred.');
       }
     }
   };
@@ -136,7 +135,7 @@ export default function LoginPage() {
 
         .text-input:focus {
           outline: none;
-          border-color: #3b82f6; /* Tailwind's blue-500 */
+          border-color: #3b82f6;
           box-shadow: 0 0 4px rgba(59, 130, 246, 0.5);
           background-color: #fff;
           color: #111;
@@ -146,7 +145,7 @@ export default function LoginPage() {
           margin-top: 2rem;
           width: 100%;
           padding: 14px 0;
-          background-color: #3b82f6; /* Blue solid color */
+          background-color: #3b82f6;
           border: none;
           border-radius: 6px;
           font-weight: 700;
@@ -159,13 +158,13 @@ export default function LoginPage() {
 
         .submit-btn:hover,
         .submit-btn:focus {
-          background-color: #2563eb; /* Darker blue */
+          background-color: #2563eb;
           outline: none;
         }
 
         .error-msg {
-          background-color: #fee2e2; /* Light red */
-          color: #b91c1c; /* Dark red */
+          background-color: #fee2e2;
+          color: #b91c1c;
           font-weight: 700;
           padding: 12px;
           margin-bottom: 20px;
